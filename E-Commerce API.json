@@ -1,0 +1,781 @@
+{
+	"info": {
+		"_postman_id": "4cfbfb13-9c54-498a-8c36-9211546aed0c",
+		"name": "E-Commerce API",
+		"description": "Postman collection for the E-Commerce backend API.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26901646"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"if (pm.response.code === 200 || pm.response.code === 201) {",
+									"    pm.collectionVariables.set(\"JWT_TOKEN\", jsonData.token);",
+									"    pm.collectionVariables.set(\"USER_ROLE\", jsonData.user.role);",
+									"    pm.collectionVariables.set(\"USER_EMAIL\", jsonData.user.email);",
+									"    console.log(\"Token stored: \" + jsonData.token);",
+									"    console.log(\"User role: \" + jsonData.user.role);",
+									"} else {",
+									"    console.log(\"Signup failed: \" + pm.response.text());",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"role\": \"user\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"signup"
+							]
+						},
+						"description": "Register a new user"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"const jsonData = pm.response.json();",
+									"if (pm.response.code === 200) {",
+									"    pm.collectionVariables.set(\"JWT_TOKEN\", jsonData.token);",
+									"    pm.collectionVariables.set(\"USER_ROLE\", jsonData.user.role);",
+									"    pm.collectionVariables.set(\"USER_EMAIL\", jsonData.user.email);",
+									"    console.log(\"Token stored: \" + jsonData.token);",
+									"    console.log(\"User role: \" + jsonData.user.role);",
+									"} else {",
+									"    console.log(\"Login failed: \" + pm.response.text());",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login with existing credentials"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/user/profile",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"profile"
+							]
+						},
+						"description": "Get the current user's profile"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/admin/all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								"all"
+							]
+						},
+						"description": "Admin endpoint to get all users"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/admin/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"admin",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "userId",
+									"description": "ID of the user to delete"
+								}
+							]
+						},
+						"description": "Admin endpoint to delete a user"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?category=electronics&price=1000&sort=asc&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "electronics",
+									"description": "Filter by category"
+								},
+								{
+									"key": "price",
+									"value": "1000",
+									"description": "Maximum price"
+								},
+								{
+									"key": "sort",
+									"value": "asc",
+									"description": "Sort by price (asc/desc)"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all products with filters, sorting, and pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "productId",
+									"description": "ID of the product"
+								}
+							]
+						},
+						"description": "Get a specific product by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Product\",\n    \"description\": \"Product description\",\n    \"price\": 99.99,\n    \"SKU\": \"PROD123\",\n    \"category\": \"electronics\",\n    \"colors\": [\n        {\n            \"color\": \"Black\",\n            \"stock\": 10,\n            \"images\": [\n                {\n                    \"url\": \"https://example.com/image1.jpg\",\n                    \"alt\": \"Product image\",\n                    \"is_featured\": true\n                }\n            ]\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						},
+						"description": "Create a new product (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Product\",\n    \"price\": 149.99\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "productId",
+									"description": "ID of the product to update"
+								}
+							]
+						},
+						"description": "Update an existing product (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "productId",
+									"description": "ID of the product to delete"
+								}
+							]
+						},
+						"description": "Delete a product (Admin only)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Forget Password",
+			"item": [
+				{
+					"name": "forgetPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"joedoe@example.com\"\n    //use any temp mail to see the mail link\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5500/forgetpassword",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5500",
+							"path": [
+								"forgetpassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n    \n    \"newPassword\":\"newPassword@123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5500/resetpassword?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWQ3Mzc1ZWJjYWQwMTlkNDJjYWVkMCIsImlhdCI6MTc0Mzg5NDc5NiwiZXhwIjoxNzQzODk1Njk2fQ.cAziL9X5fa86_xqtiXTiFRHnJzRq1-Dj-5J3aZZC_WU",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5500",
+							"path": [
+								"resetpassword"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZWQ3Mzc1ZWJjYWQwMTlkNDJjYWVkMCIsImlhdCI6MTc0Mzg5NDc5NiwiZXhwIjoxNzQzODk1Njk2fQ.cAziL9X5fa86_xqtiXTiFRHnJzRq1-Dj-5J3aZZC_WU"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Get Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2YwNGI5NjYzMDcxODEwZWVmOGMwZGMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzgwMTI5N30.1paSH3gPPUh12KeRN2DuskFbd7ManVJthvtdzLmL3CA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/cart",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2YwNGI5NjYzMDcxODEwZWVmOGMwZGMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzgwMTI5N30.1paSH3gPPUh12KeRN2DuskFbd7ManVJthvtdzLmL3CA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    // \"userId\":\"67efebd688b537abf9aa31e5\",\n \"productId\": \"67f0545d62c80c8289908e44\",\n  \"color\":\"White\",\n  \"quantity\": 1 \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/cart/add",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cart",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2YwNGI5NjYzMDcxODEwZWVmOGMwZGMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzgwMTI5N30.1paSH3gPPUh12KeRN2DuskFbd7ManVJthvtdzLmL3CA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    // \"userId\":\"67efebd688b537abf9aa31e5\",\n \"productId\": \"67f0545d62c80c8289908e44\",\n  \"color\":\"White\"\n//   \"quantity\": 1 \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/cart/remove",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cart",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Get all Orders (Admin)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2YwNGNiODYzMDcxODEwZWVmOGMxMTMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDM4MDE1NDZ9.wOHkwD_JcLocMN9l81I5orZTCB-eVmIljP3jMPd6_6E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2YwNGI5NjYzMDcxODEwZWVmOGMwZGMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzgwMTI5N30.1paSH3gPPUh12KeRN2DuskFbd7ManVJthvtdzLmL3CA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/user/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2YwNGI5NjYzMDcxODEwZWVmOGMwZGMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzgwMTI5N30.1paSH3gPPUh12KeRN2DuskFbd7ManVJthvtdzLmL3CA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/67f1c97ffd57ff7af808dac2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"67f1c97ffd57ff7af808dac2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2YwNGI5NjYzMDcxODEwZWVmOGMwZGMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc0MzgwMTI5N30.1paSH3gPPUh12KeRN2DuskFbd7ManVJthvtdzLmL3CA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deliveryAddress\": {\n    \"fullName\": \"Test\",\n    \"phone\": \"+1234567890\",\n    \"appartment\": \"Apartment 12B\",\n    \"floor\": \"3\",\n    \"bulding\": \"Building A\",\n    \"street\": \"456 Elm Street\",\n    \"city\": \"Los Angeles\",\n    \"zip\": \"90001\",\n    \"country\": \"USA\"\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update order by ID (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2YwNGNiODYzMDcxODEwZWVmOGMxMTMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDM4MDE1NDZ9.wOHkwD_JcLocMN9l81I5orZTCB-eVmIljP3jMPd6_6E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{JWT_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\":\"cancelled\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders/67f1cfc85621c4d36aa7aaee",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"67f1cfc85621c4d36aa7aaee"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order by ID (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2N2YwNGNiODYzMDcxODEwZWVmOGMxMTMiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NDM4MDE1NDZ9.wOHkwD_JcLocMN9l81I5orZTCB-eVmIljP3jMPd6_6E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/67f1cfc85621c4d36aa7aaee",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"67f1cfc85621c4d36aa7aaee"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5500"
+		},
+		{
+			"key": "JWT_TOKEN",
+			"value": ""
+		},
+		{
+			"key": "USER_ROLE",
+			"value": ""
+		},
+		{
+			"key": "USER_EMAIL",
+			"value": ""
+		}
+	]
+}
